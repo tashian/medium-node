@@ -1,8 +1,7 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import _ from 'underscore';
 import nock from 'nock';
-import mediumUser from '../lib/medium-node';
+import mediumUser from '../lib/medium';
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
