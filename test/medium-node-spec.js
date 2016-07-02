@@ -8,19 +8,19 @@ chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 describe('Medium', function() {
-  before( () => {
+  before(() => {
     nock.disableNetConnect();
 
     nock('https://medium.com/')
-      .get('@blah/latest?format=json')
+      .get('/@blah/latest?format=json')
       .replyWithFile(200, __dirname + '/samples/medium.json');
 
     nock('https://medium.com')
-      .get('@nothing/latest?format=json')
+      .get('/@nothing/latest?format=json')
       .reply(200, '{}');
 
     nock('https://medium.com')
-      .get('@fail/latest?format=json')
+      .get('/@fail/latest?format=json')
       .reply(500);
   });
 
@@ -37,10 +37,10 @@ describe('Medium', function() {
   });
 
   it('should get the JSON feed', function() {
-    expect(mediumUser('blah')).to.eventually.equal('asda');
+    return expect(mediumUser('blah')).to.eventually.have.property('posts');
   });
 
   it('should reject when HTTP errors occur', function() {
-    expect(mediumUser('fail')).to.be.rejectedWith('sdfs');
+    return expect(mediumUser('fail')).to.be.rejectedWith('Error: 500');
   });
 });
