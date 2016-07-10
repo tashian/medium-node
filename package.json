@@ -1,6 +1,6 @@
 {
   "name": "medium-node",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Simple reader for Medium JSON feeds",
   "license": "SEE LICENSE IN LICENSE",
   "main": "lib/medium.js",

@@ -1,16 +1,22 @@
 import request from 'request';
 
-function getUser(username) {
-    return new Promise(function(resolve, reject) {
-      if (username.charAt(0) == '@') {
-        username = username.substr(1);
-      }
+export default class Medium {
+  constructor(username) {
+    if (username.charAt(0) == '@') {
+      username = username.substr(1);
+    }
 
-      if (username.match(/[\/\\@&?]/)) {
-        return reject(new Error("Invalid characters in username " + username));
-      }
+    if (username.match(/[\/\\@&?]/)) {
+      return new Error("Invalid characters in username " + username);
+    }
 
-      request('https://medium.com/@' + username + '/latest?format=json',
+    this.username = username;
+  }
+
+  fetch() {
+    var that = this;
+    return new Promise((resolve, reject) => {
+      request('https://medium.com/@' + this.username + '/latest?format=json',
         function(err, response) {
           if (!err && response.statusCode == 200) {
             resolve(
@@ -22,5 +28,4 @@ function getUser(username) {
         });
     });
   }
-
-export { getUser }
+}

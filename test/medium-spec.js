@@ -1,7 +1,7 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import nock from 'nock';
-import mediumUser from '../lib/medium';
+import Medium from '../src/medium';
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -11,7 +11,7 @@ describe('Medium', function() {
     nock.disableNetConnect();
 
     nock('https://medium.com/')
-      .get('/@blah/latest?format=json')
+      .get('/@samples/latest?format=json')
       .replyWithFile(200, __dirname + '/samples/medium.json');
 
     nock('https://medium.com')
@@ -24,22 +24,24 @@ describe('Medium', function() {
   });
 
   it('should accept usernames with @', function() {
-    expect(mediumUser('@nothing')).not.to.be.rejected;
+    expect(() => new Medium('@nothing')).to.not.throw(Error);
   });
 
   it('should accept usernames without @', function() {
-    expect(mediumUser('nothing')).not.to.be.rejected;
+    expect(() => new Medium('nothing')).to.not.throw(Error);
   });
 
   it('should reject invalid usernames', function() {
-    expect(mediumUser('n@@ot@hing')).to.be.rejected;
+    expect(new Medium('n@@ot@hing')).to.be.an.instanceof(Error);
   });
 
   it('should get the JSON feed', function() {
-    return expect(mediumUser('blah')).to.eventually.have.property('posts');
+    var medium = new Medium('samples');
+    return expect(medium.fetch()).to.eventually.have.property('posts');
   });
 
   it('should reject when HTTP errors occur', function() {
-    return expect(mediumUser('fail')).to.be.rejectedWith('Error: 500');
+    var medium = new Medium('fail');
+    return expect(medium.fetch()).to.be.rejectedWith('Error: 500');
   });
 });
